@@ -26,9 +26,9 @@ namespace FileTagEditor
                     try
                     {
                         // Use TagLibSharp to read the file metadata
-                        using (TagLib.File file = TagLib.File.Create(selectedFile))
+                        using (TagLib.File tagLibFile = TagLib.File.Create(selectedFile))
                         {
-                            MetadataManager.ShowMetadataInfo(selectedFile, file);
+                            MetadataManager.ShowMetadataInfo(selectedFile, tagLibFile);
                         }
                     }
                     catch (Exception ex)
