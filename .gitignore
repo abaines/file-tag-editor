@@ -2,13 +2,3 @@
 bin/
 obj/
 
-# Ignore user-specific/project-specific IDE files
-*.user
-*.suo
-*.userprefs
-
-# Ignore logs
-*.log
-
-# Ignore environment files
-.env
