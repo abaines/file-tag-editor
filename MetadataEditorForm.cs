@@ -105,8 +105,15 @@ namespace FileTagEditor
         {
             try
             {
-                // Get or create RiffInfo tag for WAV files (what Windows reads)
+                // Try to use multiple tag formats for maximum Windows compatibility
                 TagLib.Tag riffTag = tagFile.GetTag(TagLib.TagTypes.RiffInfo, true);
+                TagLib.Tag id3v23Tag = tagFile.GetTag(TagLib.TagTypes.Id3v2, true);
+                
+                // Force ID3v2.3 for better Windows compatibility
+                if (id3v23Tag is TagLib.Id3v2.Tag id3Tag)
+                {
+                    id3Tag.Version = 3;
+                }
                 
                 // Update metadata from the grid
                 foreach (DataGridViewRow row in metadataGrid.Rows)
@@ -119,29 +126,37 @@ namespace FileTagEditor
                     switch (property)
                     {
                         case "Title":
+                            // Write to all available tag formats
                             riffTag.Title = string.IsNullOrWhiteSpace(value) ? null : value;
-                            tagFile.Tag.Title = string.IsNullOrWhiteSpace(value) ? null : value; // Also update unified tag
+                            id3v23Tag.Title = string.IsNullOrWhiteSpace(value) ? null : value;
+                            tagFile.Tag.Title = string.IsNullOrWhiteSpace(value) ? null : value;
                             break;
                         case "Subtitle":
-                            riffTag.Subtitle = string.IsNullOrWhiteSpace(value) ? null : value;
+                            // RiffInfo might not support subtitle, so prioritize ID3v2
+                            id3v23Tag.Subtitle = string.IsNullOrWhiteSpace(value) ? null : value;
                             tagFile.Tag.Subtitle = string.IsNullOrWhiteSpace(value) ? null : value;
                             break;
                         case "Album":
+                            // Write to both formats
                             riffTag.Album = string.IsNullOrWhiteSpace(value) ? null : value;
+                            id3v23Tag.Album = string.IsNullOrWhiteSpace(value) ? null : value;
                             tagFile.Tag.Album = string.IsNullOrWhiteSpace(value) ? null : value;
                             break;
                         case "Year":
                             uint year = uint.TryParse(value, out uint parsedYear) ? parsedYear : 0;
                             riffTag.Year = year;
+                            id3v23Tag.Year = year;
                             tagFile.Tag.Year = year;
                             break;
                         case "#":
                             uint track = uint.TryParse(value, out uint parsedTrack) ? parsedTrack : 0;
                             riffTag.Track = track;
+                            id3v23Tag.Track = track;
                             tagFile.Tag.Track = track;
                             break;
                         case "Comments":
                             riffTag.Comment = string.IsNullOrWhiteSpace(value) ? null : value;
+                            id3v23Tag.Comment = string.IsNullOrWhiteSpace(value) ? null : value;
                             tagFile.Tag.Comment = string.IsNullOrWhiteSpace(value) ? null : value;
                             break;
                         default:
