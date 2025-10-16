@@ -105,6 +105,9 @@ namespace FileTagEditor
         {
             try
             {
+                // Get or create RiffInfo tag for WAV files (what Windows reads)
+                TagLib.Tag riffTag = tagFile.GetTag(TagLib.TagTypes.RiffInfo, true);
+                
                 // Update metadata from the grid
                 foreach (DataGridViewRow row in metadataGrid.Rows)
                 {
@@ -116,27 +119,29 @@ namespace FileTagEditor
                     switch (property)
                     {
                         case "Title":
-                            tagFile.Tag.Title = string.IsNullOrWhiteSpace(value) ? null : value;
+                            riffTag.Title = string.IsNullOrWhiteSpace(value) ? null : value;
+                            tagFile.Tag.Title = string.IsNullOrWhiteSpace(value) ? null : value; // Also update unified tag
                             break;
                         case "Subtitle":
+                            riffTag.Subtitle = string.IsNullOrWhiteSpace(value) ? null : value;
                             tagFile.Tag.Subtitle = string.IsNullOrWhiteSpace(value) ? null : value;
                             break;
                         case "Album":
+                            riffTag.Album = string.IsNullOrWhiteSpace(value) ? null : value;
                             tagFile.Tag.Album = string.IsNullOrWhiteSpace(value) ? null : value;
                             break;
                         case "Year":
-                            if (uint.TryParse(value, out uint year))
-                                tagFile.Tag.Year = year;
-                            else
-                                tagFile.Tag.Year = 0;
+                            uint year = uint.TryParse(value, out uint parsedYear) ? parsedYear : 0;
+                            riffTag.Year = year;
+                            tagFile.Tag.Year = year;
                             break;
                         case "#":
-                            if (uint.TryParse(value, out uint track))
-                                tagFile.Tag.Track = track;
-                            else
-                                tagFile.Tag.Track = 0;
+                            uint track = uint.TryParse(value, out uint parsedTrack) ? parsedTrack : 0;
+                            riffTag.Track = track;
+                            tagFile.Tag.Track = track;
                             break;
                         case "Comments":
+                            riffTag.Comment = string.IsNullOrWhiteSpace(value) ? null : value;
                             tagFile.Tag.Comment = string.IsNullOrWhiteSpace(value) ? null : value;
                             break;
                         default:
@@ -147,7 +152,17 @@ namespace FileTagEditor
                 // Save the file
                 tagFile.Save();
                 
-                MessageBox.Show("Metadata saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                // Show what was saved for full UX feedback
+                string fileName = System.IO.Path.GetFileName(filePath);
+                string savedInfo = $"Metadata saved successfully for:\n{fileName}\n\nSaved values:\n";
+                savedInfo += $"Title: '{tagFile.Tag.Title}'\n";
+                savedInfo += $"Subtitle: '{tagFile.Tag.Subtitle}'\n";
+                savedInfo += $"Album: '{tagFile.Tag.Album}'\n";
+                savedInfo += $"Year: {tagFile.Tag.Year}\n";
+                savedInfo += $"Track: {tagFile.Tag.Track}\n";
+                savedInfo += $"Comment: '{tagFile.Tag.Comment}'";
+                
+                MessageBox.Show(savedInfo, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
