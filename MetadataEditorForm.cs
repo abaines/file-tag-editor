@@ -88,6 +88,9 @@ namespace FileTagEditor
             string subtitle = tagFile.Tag.Subtitle ?? "";
             metadataGrid.Rows.Add("Subtitle", subtitle);
             
+            string album = tagFile.Tag.Album ?? "";
+            metadataGrid.Rows.Add("Album", album);
+            
             uint year = tagFile.Tag.Year;
             metadataGrid.Rows.Add("Year", year == 0 ? "" : year.ToString());
             
@@ -117,6 +120,9 @@ namespace FileTagEditor
                             break;
                         case "Subtitle":
                             tagFile.Tag.Subtitle = string.IsNullOrWhiteSpace(value) ? null : value;
+                            break;
+                        case "Album":
+                            tagFile.Tag.Album = string.IsNullOrWhiteSpace(value) ? null : value;
                             break;
                         case "Year":
                             if (uint.TryParse(value, out uint year))
