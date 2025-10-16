@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using TagLib;
 
 namespace FileTagEditor
 {
@@ -21,7 +22,20 @@ namespace FileTagEditor
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string selectedFile = openFileDialog.FileName;
-                    MessageBox.Show($"Selected file: {selectedFile}", "File Tag Editor", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    
+                    try
+                    {
+                        // Use TagLibSharp to read the file metadata
+                        using (TagLib.File file = TagLib.File.Create(selectedFile))
+                        {
+                            string title = file.Tag.Title ?? "No title found";
+                            MessageBox.Show($"Selected file: {selectedFile}\nTitle: {title}", "File Tag Editor", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error reading file metadata: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
                 else
                 {
