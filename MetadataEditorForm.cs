@@ -81,24 +81,59 @@ namespace FileTagEditor
 
         private void LoadMetadata()
         {
-            // Add title row
+            // Add metadata rows
             string title = tagFile.Tag.Title ?? "";
             metadataGrid.Rows.Add("Title", title);
             
-            // TODO: Add more metadata properties later
-            // metadataGrid.Rows.Add("Artist", tagFile.Tag.FirstArtist ?? "");
-            // metadataGrid.Rows.Add("Album", tagFile.Tag.Album ?? "");
+            string subtitle = tagFile.Tag.Subtitle ?? "";
+            metadataGrid.Rows.Add("Subtitle", subtitle);
+            
+            uint year = tagFile.Tag.Year;
+            metadataGrid.Rows.Add("Year", year == 0 ? "" : year.ToString());
+            
+            uint track = tagFile.Tag.Track;
+            metadataGrid.Rows.Add("#", track == 0 ? "" : track.ToString());
+            
+            string comment = tagFile.Tag.Comment ?? "";
+            metadataGrid.Rows.Add("Comments", comment);
         }
 
         private void SaveButton_Click(object? sender, EventArgs e)
         {
             try
             {
-                // Update the title from the grid
-                if (metadataGrid.Rows.Count > 0)
+                // Update metadata from the grid
+                foreach (DataGridViewRow row in metadataGrid.Rows)
                 {
-                    string newTitle = metadataGrid.Rows[0].Cells["Value"].Value?.ToString() ?? "";
-                    tagFile.Tag.Title = string.IsNullOrWhiteSpace(newTitle) ? null : newTitle;
+                    if (row.Cells["Property"].Value == null) continue;
+                    
+                    string property = row.Cells["Property"].Value.ToString() ?? "";
+                    string value = row.Cells["Value"].Value?.ToString() ?? "";
+                    
+                    switch (property)
+                    {
+                        case "Title":
+                            tagFile.Tag.Title = string.IsNullOrWhiteSpace(value) ? null : value;
+                            break;
+                        case "Subtitle":
+                            tagFile.Tag.Subtitle = string.IsNullOrWhiteSpace(value) ? null : value;
+                            break;
+                        case "Year":
+                            if (uint.TryParse(value, out uint year))
+                                tagFile.Tag.Year = year;
+                            else
+                                tagFile.Tag.Year = 0;
+                            break;
+                        case "#":
+                            if (uint.TryParse(value, out uint track))
+                                tagFile.Tag.Track = track;
+                            else
+                                tagFile.Tag.Track = 0;
+                            break;
+                        case "Comments":
+                            tagFile.Tag.Comment = string.IsNullOrWhiteSpace(value) ? null : value;
+                            break;
+                    }
                 }
 
                 // Save the file
