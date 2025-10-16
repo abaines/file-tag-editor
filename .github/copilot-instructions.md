@@ -10,10 +10,12 @@
 
 ## General Guidelines
 - Prefer clarity and maintainability over brevity.
+- Follow DRY (Don't Repeat Yourself): extract common patterns into reusable methods or constants.
 - Prefer explicit behavior over implicit/automatic behavior: make control flow, resource management, and side effects visible and intentional.
 - Avoid comments and use self-documenting code, like good method names and variable names.
 - Use offensive (fail-fast) programming: fail immediately and loudly if an assumption is violated, rather than trying to recover or fallback.
 Use Debug.Assert() and ArgumentNullException.ThrowIfNull() to catch logic errors early.
+- Always include a `default` case in switch statements that throws an exception (e.g., `throw new ArgumentOutOfRangeException()`) to catch unexpected values and prevent silent failures.
 - For all null/validity checks, use separate assertion calls for each condition (e.g., `ArgumentNullException.ThrowIfNull(x)` and `Debug.Assert(x.IsValid)`), rather than compound `if` or `||` checks.
 This ensures error messages are specific and debugging is easier.
 - Treat all variables as readonly where possible: use `readonly` fields and prefer immutable data structures.
