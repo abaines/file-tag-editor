@@ -139,6 +139,8 @@ namespace FileTagEditor
                         case "Comments":
                             tagFile.Tag.Comment = string.IsNullOrWhiteSpace(value) ? null : value;
                             break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(property), property, $"Unknown metadata property: {property}");
                     }
                 }
 
