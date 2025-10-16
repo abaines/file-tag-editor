@@ -28,8 +28,7 @@ namespace FileTagEditor
                         // Use TagLibSharp to read the file metadata
                         using (TagLib.File file = TagLib.File.Create(selectedFile))
                         {
-                            string title = file.Tag.Title ?? "No title found";
-                            MessageBox.Show($"Selected file: {selectedFile}\nTitle: {title}", "File Tag Editor", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MetadataManager.ShowMetadataInfo(selectedFile, file);
                         }
                     }
                     catch (Exception ex)
