@@ -6,16 +6,16 @@ namespace FileTagEditor
     public static class MetadataManager
     {
         /// <summary>
-        /// Displays metadata information from a TagLib file in a message box
+        /// Shows the metadata editor form for editing file metadata
         /// </summary>
         /// <param name="filePath">The path to the selected file</param>
         /// <param name="tagFile">The TagLib.File object containing metadata</param>
-        public static void ShowMetadataInfo(string filePath, TagLib.File tagFile)
+        public static void ShowMetadataEditor(string filePath, TagLib.File tagFile)
         {
-            string title = tagFile.Tag.Title ?? "No title found";
-            string message = $"Selected file: {filePath}\nTitle: {title}";
-            
-            MessageBox.Show(message, "File Tag Editor", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            using (var editorForm = new MetadataEditorForm(filePath, tagFile))
+            {
+                editorForm.ShowDialog();
+            }
         }
     }
 }
