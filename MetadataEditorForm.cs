@@ -25,16 +25,17 @@ namespace FileTagEditor
         private void InitializeComponent()
         {
             this.Text = "Metadata Editor - File Tag Editor";
-            this.Size = new System.Drawing.Size(600, 400);
+            this.Size = new System.Drawing.Size(600, 420);
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
+            this.FormBorderStyle = FormBorderStyle.Sizable;
+            this.MinimumSize = new System.Drawing.Size(400, 300);
 
             // File name label
             fileNameLabel = new Label();
             fileNameLabel.Text = $"File: {System.IO.Path.GetFileName(filePath)}";
             fileNameLabel.Location = new System.Drawing.Point(12, 12);
             fileNameLabel.Size = new System.Drawing.Size(560, 23);
+            fileNameLabel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             fileNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
             this.Controls.Add(fileNameLabel);
 
@@ -42,6 +43,7 @@ namespace FileTagEditor
             metadataGrid = new DataGridView();
             metadataGrid.Location = new System.Drawing.Point(12, 45);
             metadataGrid.Size = new System.Drawing.Size(560, 280);
+            metadataGrid.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             metadataGrid.AllowUserToAddRows = false;
             metadataGrid.AllowUserToDeleteRows = false;
             metadataGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -54,24 +56,27 @@ namespace FileTagEditor
             metadataGrid.Columns["Property"].ReadOnly = true;
             metadataGrid.Columns["Property"].Width = 150;
             metadataGrid.Columns["Value"].Width = 400;
+            metadataGrid.Columns["Value"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             
             this.Controls.Add(metadataGrid);
 
-            // Save button
-            saveButton = new Button();
-            saveButton.Text = "Save";
-            saveButton.Location = new System.Drawing.Point(415, 335);
-            saveButton.Size = new System.Drawing.Size(75, 23);
-            saveButton.Click += SaveButton_Click;
-            this.Controls.Add(saveButton);
-
-            // Cancel button
+            // Cancel button (rightmost)
             cancelButton = new Button();
             cancelButton.Text = "Cancel";
-            cancelButton.Location = new System.Drawing.Point(496, 335);
-            cancelButton.Size = new System.Drawing.Size(75, 23);
+            cancelButton.Size = new System.Drawing.Size(90, 30);
+            cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            cancelButton.Location = new System.Drawing.Point(this.ClientSize.Width - 90 - 12, this.ClientSize.Height - 30 - 12);
             cancelButton.Click += CancelButton_Click;
             this.Controls.Add(cancelButton);
+
+            // Save button (to the left of Cancel)
+            saveButton = new Button();
+            saveButton.Text = "Save";
+            saveButton.Size = new System.Drawing.Size(90, 30);
+            saveButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            saveButton.Location = new System.Drawing.Point(cancelButton.Left - 90 - 10, cancelButton.Top);
+            saveButton.Click += SaveButton_Click;
+            this.Controls.Add(saveButton);
         }
 
         private void LoadMetadata()
