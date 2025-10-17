@@ -7,28 +7,10 @@ namespace FileTagEditor
     static class Program
     {
         [STAThread]
-        static void Main(string[] args)
+        static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            
-            // Check if we're in analysis mode
-            if (args.Length > 0 && args[0] == "--analyze")
-            {
-                using (OpenFileDialog openFileDialog = new OpenFileDialog())
-                {
-                    openFileDialog.Title = "Select a file to analyze RIFF chunks";
-                    openFileDialog.Filter = "All files (*.*)|*.*|Audio files (*.mp3;*.flac;*.wav;*.m4a)|*.mp3;*.flac;*.wav;*.m4a";
-                    openFileDialog.FilterIndex = 2; // Default to audio files
-                    
-                    if (openFileDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        string selectedFile = openFileDialog.FileName;
-                        RiffAnalyzer.AnalyzeRiffChunks(selectedFile);
-                    }
-                }
-                return;
-            }
             
             // Show file dialog to let user select a file
             using (OpenFileDialog openFileDialog = new OpenFileDialog())

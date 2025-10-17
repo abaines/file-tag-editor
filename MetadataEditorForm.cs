@@ -157,33 +157,7 @@ namespace FileTagEditor
                 // Convert TagLibSharp's RIFF chunks to Windows-standard names
                 SimpleRiffPatcher.ConvertToWindowsStandard(filePath);
                 
-                // Reopen the file to check what was actually written
-                using (TagLib.File newTagFile = TagLib.File.Create(filePath))
-                {
-                    // Debug: Show what we wrote with Windows-compatible format
-                string fileName = System.IO.Path.GetFileName(filePath);
-                string debugInfo = $"Metadata saved for: {fileName}\n\n";
-                
-                debugInfo += "WINDOWS-COMPATIBLE RIFF INFO:\n";
-                debugInfo += $"INAM (Title): '{title}'\n";
-                debugInfo += $"IPRD (Album): '{album}'\n";
-                debugInfo += $"IART (Artist): '{artist}'\n";
-                debugInfo += $"ICRD (Year): '{year}'\n";
-                debugInfo += $"ITRK (Track): '{track}'\n";
-                debugInfo += $"ICMT (Comment): '{comment}'\n";
-                debugInfo += $"IGNR (Genre): '{genre}'\n\n";
-                
-                    debugInfo += "UNIFIED TAG:\n";
-                    debugInfo += $"Title: '{newTagFile.Tag.Title}'\n";
-                    debugInfo += $"Album: '{newTagFile.Tag.Album}'\n";
-                    debugInfo += $"Year: {newTagFile.Tag.Year}\n";
-                    debugInfo += $"Track: {newTagFile.Tag.Track}\n";
-                    debugInfo += $"Comment: '{newTagFile.Tag.Comment}'\n\n";
-                    
-                    debugInfo += $"Tag types: {string.Join(", ", newTagFile.TagTypes)}";
-                    
-                    MessageBox.Show(debugInfo, "Debug - What Was Actually Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
+                MessageBox.Show("Metadata saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 
                 this.DialogResult = DialogResult.OK;
                 this.Close();
