@@ -11,7 +11,7 @@ namespace FileTagEditor
         public string Comment { get; init; } = "";
         public uint Year { get; init; }
         public uint Track { get; init; }
-        
+
         /// <summary>
         /// Creates metadata from a TagLib file
         /// </summary>
@@ -27,7 +27,7 @@ namespace FileTagEditor
                 Track = tagFile.Tag.Track
             };
         }
-        
+
         /// <summary>
         /// Applies this metadata to a TagLib file
         /// </summary>

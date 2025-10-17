@@ -14,7 +14,7 @@ namespace FileTagEditor
         {
             // Show file dialog to let user select a file
             string? selectedFile = FileSelector.SelectAudioFile();
-            
+
             if (selectedFile != null)
             {
                 try

@@ -13,11 +13,11 @@ namespace FileTagEditor
         {
             this.filePath = filePath;
             this.metadata = initialMetadata;
-            
+
             InitializeComponent();
             LoadMetadata();
         }
-        
+
 
         private void InitializeComponent()
         {
@@ -46,7 +46,7 @@ namespace FileTagEditor
             metadataGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             metadataGrid.MultiSelect = false;
             metadataGrid.RowHeadersVisible = false;
-            
+
             // Add columns
             metadataGrid.Columns.Add("Property", "Property");
             metadataGrid.Columns.Add("Value", "Value");
@@ -54,7 +54,7 @@ namespace FileTagEditor
             metadataGrid.Columns["Property"].Width = 150;
             metadataGrid.Columns["Value"].Width = 400;
             metadataGrid.Columns["Value"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            
+
             this.Controls.Add(metadataGrid);
 
             // Cancel button (rightmost)
@@ -97,14 +97,14 @@ namespace FileTagEditor
             string comment = metadata.Comment;
             uint year = metadata.Year;
             uint track = metadata.Track;
-            
+
             foreach (DataGridViewRow row in metadataGrid.Rows)
             {
                 if (row.Cells["Property"].Value == null) continue;
-                
+
                 string property = row.Cells["Property"].Value.ToString() ?? "";
                 string value = row.Cells["Value"].Value?.ToString() ?? "";
-                
+
                 switch (property)
                 {
                     case "Title":
@@ -127,7 +127,7 @@ namespace FileTagEditor
                         break;
                 }
             }
-            
+
             return new AudioMetadata
             {
                 Title = title,
@@ -148,7 +148,7 @@ namespace FileTagEditor
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error updating metadata: {ex.Message}", "Error", 
+                MessageBox.Show($"Error updating metadata: {ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

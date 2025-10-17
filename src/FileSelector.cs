@@ -18,12 +18,12 @@ namespace FileTagEditor
                 openFileDialog.Title = "Select a file to edit tags";
                 openFileDialog.Filter = "All files (*.*)|*.*|Audio files (*.mp3;*.flac;*.wav;*.m4a)|*.mp3;*.flac;*.wav;*.m4a";
                 openFileDialog.FilterIndex = 2; // Default to audio files
-                
+
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     return openFileDialog.FileName;
                 }
-                
+
                 return null;
             }
         }
