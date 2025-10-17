@@ -20,9 +20,15 @@ namespace FileTagEditor
         {
             get
             {
-                foreach (string s in GetValuesAsStrings("IPRD"))
-                    if (!string.IsNullOrEmpty(s))
-                        return s;
+                string[] valuesAsStrings = GetValuesAsStrings("IPRD");
+                foreach (string text in valuesAsStrings)
+                {
+                    if (!string.IsNullOrEmpty(text))
+                    {
+                        return text;
+                    }
+                }
+
                 return null;
             }
             set => SetValue("IPRD", value);
