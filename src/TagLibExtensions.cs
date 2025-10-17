@@ -1,4 +1,3 @@
-using System;
 using TagLib;
 using TagLib.Riff;
 
@@ -64,7 +63,6 @@ namespace FileTagEditor
             windowsInfoTag.Performers = currentTag.Performers;
             windowsInfoTag.Comment = currentTag.Comment;
             windowsInfoTag.Year = currentTag.Year;
-            windowsInfoTag.Genres = currentTag.Genres;
             
             // Use reflection to inject our custom tag
             var tagField = typeof(TagLib.Riff.File).GetField("info_tag", 

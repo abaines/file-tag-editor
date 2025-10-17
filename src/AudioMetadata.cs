@@ -9,7 +9,6 @@ namespace FileTagEditor
         public string Album { get; set; } = "";
         public string Artist { get; set; } = "";
         public string Comment { get; set; } = "";
-        public string Genre { get; set; } = "";
         public uint Year { get; set; }
         public uint Track { get; set; }
         
@@ -24,7 +23,6 @@ namespace FileTagEditor
                 Album = tagFile.Tag.Album ?? "",
                 Artist = tagFile.Tag.FirstPerformer ?? "",
                 Comment = tagFile.Tag.Comment ?? "",
-                Genre = tagFile.Tag.FirstGenre ?? "",
                 Year = tagFile.Tag.Year,
                 Track = tagFile.Tag.Track
             };
@@ -39,7 +37,6 @@ namespace FileTagEditor
             tagFile.Tag.Album = string.IsNullOrWhiteSpace(Album) ? null : Album;
             tagFile.Tag.Performers = string.IsNullOrWhiteSpace(Artist) ? new string[0] : new[] { Artist };
             tagFile.Tag.Comment = string.IsNullOrWhiteSpace(Comment) ? null : Comment;
-            tagFile.Tag.Genres = string.IsNullOrWhiteSpace(Genre) ? new string[0] : new[] { Genre };
             tagFile.Tag.Year = Year;
             tagFile.Tag.Track = Track;
         }

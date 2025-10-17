@@ -18,7 +18,6 @@ namespace FileTagEditor
                 Album = initialMetadata.Album,
                 Artist = initialMetadata.Artist,
                 Comment = initialMetadata.Comment,
-                Genre = initialMetadata.Genre,
                 Year = initialMetadata.Year,
                 Track = initialMetadata.Track
             };
@@ -102,7 +101,6 @@ namespace FileTagEditor
             metadataGrid.Rows.Add("Year", metadata.Year == 0 ? "" : metadata.Year.ToString());
             metadataGrid.Rows.Add("#", metadata.Track == 0 ? "" : metadata.Track.ToString());
             metadataGrid.Rows.Add("Comments", metadata.Comment);
-            metadataGrid.Rows.Add("Genre", metadata.Genre);
         }
         
         private void UpdateMetadataFromGrid()
@@ -133,9 +131,6 @@ namespace FileTagEditor
                         break;
                     case "Comments":
                         metadata.Comment = value;
-                        break;
-                    case "Genre":
-                        metadata.Genre = value;
                         break;
                 }
             }
