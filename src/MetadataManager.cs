@@ -9,11 +9,7 @@ namespace FileTagEditor
         {
             try
             {
-                AudioMetadata currentMetadata;
-                using (TagLib.File tagFile = TagLib.File.Create(filePath))
-                {
-                    currentMetadata = AudioMetadata.FromTagLibFile(tagFile);
-                }
+                AudioMetadata currentMetadata = LoadCurrentMetadata(filePath);
                 
                 using (MetadataEditorForm editorForm = new MetadataEditorForm(filePath, currentMetadata))
                 {
@@ -31,6 +27,17 @@ namespace FileTagEditor
             {
                 MessageBox.Show($"Error handling metadata: {ex.Message}", "Error", 
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        
+        /// <summary>
+        /// Loads current metadata from the specified file
+        /// </summary>
+        private static AudioMetadata LoadCurrentMetadata(string filePath)
+        {
+            using (TagLib.File tagFile = TagLib.File.Create(filePath))
+            {
+                return AudioMetadata.FromTagLibFile(tagFile);
             }
         }
         
