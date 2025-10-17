@@ -42,31 +42,11 @@ namespace FileTagEditor
             get => GetValueAsUInt("ITRK");
             set => SetValue("ITRK", value);
         }
-    }
-    
-    /// <summary>
-    /// Extension methods to add Windows-compatible saving to TagLibSharp
-    /// </summary>
-    public static class TagLibExtensions
-    {
-        /// <summary>
-        /// Saves the file with Windows Properties-compatible RIFF chunk names
-        /// </summary>
-        public static void SaveWithWindowsCompatibility(this TagLib.File file)
-        {
-            // For RIFF files (WAV), we need special handling
-            if (file is TagLib.Riff.File riffFile)
-            {
-                SaveRiffWithWindowsCompatibility(riffFile);
-            }
-            else
-            {
-                // For non-RIFF files, save normally
-                file.Save();
-            }
-        }
         
-        private static void SaveRiffWithWindowsCompatibility(TagLib.Riff.File riffFile)
+        /// <summary>
+        /// Saves a RIFF file with Windows Properties-compatible chunk names
+        /// </summary>
+        public static void SaveWithWindowsCompatibility(TagLib.Riff.File riffFile)
         {
             // Get current metadata
             var currentTag = riffFile.Tag;

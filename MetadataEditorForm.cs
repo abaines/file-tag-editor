@@ -151,8 +151,15 @@ namespace FileTagEditor
                 tagFile.Tag.Track = track;
                 tagFile.Tag.Comment = string.IsNullOrWhiteSpace(comment) ? null : comment;
                 
-                // Save with Windows compatibility (uses our custom extension method)
-                tagFile.SaveWithWindowsCompatibility();
+                // Save with Windows compatibility for RIFF files
+                if (tagFile is TagLib.Riff.File riffFile)
+                {
+                    WindowsInfoTag.SaveWithWindowsCompatibility(riffFile);
+                }
+                else
+                {
+                    tagFile.Save(); // For non-RIFF files, save normally
+                }
                 tagFile.Dispose();
                 
                 MessageBox.Show("Metadata saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
