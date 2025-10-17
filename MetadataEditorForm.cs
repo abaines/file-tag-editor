@@ -144,18 +144,16 @@ namespace FileTagEditor
                     }
                 }
 
-                // First save with TagLibSharp for ID3 tags
+                // Update metadata in TagLibSharp
                 tagFile.Tag.Title = string.IsNullOrWhiteSpace(title) ? null : title;
                 tagFile.Tag.Album = string.IsNullOrWhiteSpace(album) ? null : album;
                 tagFile.Tag.Year = year;
                 tagFile.Tag.Track = track;
                 tagFile.Tag.Comment = string.IsNullOrWhiteSpace(comment) ? null : comment;
                 
-                tagFile.Save();
-                tagFile.Dispose();  // Close the file so we can rewrite it
-                
-                // Convert TagLibSharp's RIFF chunks to Windows-standard names
-                SimpleRiffPatcher.ConvertToWindowsStandard(filePath);
+                // Save with Windows compatibility (uses our custom extension method)
+                tagFile.SaveWithWindowsCompatibility();
+                tagFile.Dispose();
                 
                 MessageBox.Show("Metadata saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 
