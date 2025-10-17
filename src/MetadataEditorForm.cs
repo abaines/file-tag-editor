@@ -134,6 +134,14 @@ namespace FileTagEditor
         }
 
         /// <summary>
+        /// Safely parses a string to uint, returning 0 if parsing fails
+        /// </summary>
+        private static uint ParseUintOrDefault(string value)
+        {
+            return uint.TryParse(value, out uint parsed) ? parsed : 0;
+        }
+
+        /// <summary>
         /// Updates a specific metadata property based on the property name and value
         /// </summary>
         private static void UpdateMetadataProperty(string property, string value, ref string title, ref string album, ref string artist, ref string comment, ref uint year, ref uint track)
@@ -150,10 +158,10 @@ namespace FileTagEditor
                     artist = value;
                     break;
                 case "Year":
-                    year = uint.TryParse(value, out uint parsedYear) ? parsedYear : 0;
+                    year = ParseUintOrDefault(value);
                     break;
                 case "#":
-                    track = uint.TryParse(value, out uint parsedTrack) ? parsedTrack : 0;
+                    track = ParseUintOrDefault(value);
                     break;
                 case "Comments":
                     comment = value;
