@@ -1,0 +1,19 @@
+{
+    // Auto-format and trim whitespace on save
+    "editor.formatOnSave": true,
+    "editor.trimAutoWhitespace": true,
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    // C# specific formatting
+    "omnisharp.enableEditorConfigSupport": true,
+    "omnisharp.enableRoslynAnalyzers": true,
+    // Additional formatting options
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit",
+        "source.organizeImports": "explicit"
+    },
+    // Show whitespace characters to make issues visible
+    "editor.renderWhitespace": "trailing",
+    // Ensure consistent line endings
+    "files.eol": "\r\n"
+}
