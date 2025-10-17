@@ -48,13 +48,13 @@ namespace FileTagEditor
         public static void SaveWithWindowsCompatibility(TagLib.Riff.File riffFile)
         {
             // Get current metadata
-            var currentTag = riffFile.Tag;
+            TagLib.Tag currentTag = riffFile.Tag;
             
             // Remove existing INFO tag
             riffFile.RemoveTags(TagTypes.RiffInfo);
             
             // Create our Windows-compatible INFO tag
-            var windowsInfoTag = new WindowsInfoTag();
+            WindowsInfoTag windowsInfoTag = new WindowsInfoTag();
             
             // Copy all metadata to the Windows-compatible tag
             windowsInfoTag.Title = currentTag.Title;
@@ -65,12 +65,12 @@ namespace FileTagEditor
             windowsInfoTag.Year = currentTag.Year;
             
             // Use reflection to inject our custom tag
-            var tagField = typeof(TagLib.Riff.File).GetField("info_tag", 
+            System.Reflection.FieldInfo? tagField = typeof(TagLib.Riff.File).GetField("info_tag", 
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             tagField?.SetValue(riffFile, windowsInfoTag);
             
             // Update the combined tag
-            var combinedTagField = typeof(TagLib.Riff.File).GetField("tag", 
+            System.Reflection.FieldInfo? combinedTagField = typeof(TagLib.Riff.File).GetField("tag", 
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             if (combinedTagField?.GetValue(riffFile) is CombinedTag combinedTag)
             {

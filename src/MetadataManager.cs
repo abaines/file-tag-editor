@@ -17,12 +17,12 @@ namespace FileTagEditor
                 }
                 
                 // Show editor form and get user's changes
-                using (var editorForm = new MetadataEditorForm(filePath, currentMetadata))
+                using (MetadataEditorForm editorForm = new MetadataEditorForm(filePath, currentMetadata))
                 {
                     if (editorForm.ShowDialog() == DialogResult.OK)
                     {
                         // User clicked Save - apply the changes
-                        var updatedMetadata = editorForm.GetMetadata();
+                        AudioMetadata updatedMetadata = editorForm.GetMetadata();
                         SaveMetadata(filePath, updatedMetadata);
                         
                         MessageBox.Show("Metadata saved successfully!", "Success", 
