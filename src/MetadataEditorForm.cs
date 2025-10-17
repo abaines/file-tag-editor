@@ -5,6 +5,9 @@ namespace FileTagEditor
 {
     public partial class MetadataEditorForm : Form
     {
+        private const string PropertyColumn = "Property";
+        private const string ValueColumn = "Value";
+
         private Label _fileNameLabel = null!;
         private DataGridView _metadataGrid = null!;
         private Button _saveButton = null!;
@@ -51,12 +54,12 @@ namespace FileTagEditor
             _metadataGrid.RowHeadersVisible = false;
 
             // Add columns
-            _metadataGrid.Columns.Add("Property", "Property");
-            _metadataGrid.Columns.Add("Value", "Value");
-            _metadataGrid.Columns["Property"].ReadOnly = true;
-            _metadataGrid.Columns["Property"].Width = 150;
-            _metadataGrid.Columns["Value"].Width = 400;
-            _metadataGrid.Columns["Value"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            _metadataGrid.Columns.Add(PropertyColumn, PropertyColumn);
+            _metadataGrid.Columns.Add(ValueColumn, ValueColumn);
+            _metadataGrid.Columns[PropertyColumn].ReadOnly = true;
+            _metadataGrid.Columns[PropertyColumn].Width = 150;
+            _metadataGrid.Columns[ValueColumn].Width = 400;
+            _metadataGrid.Columns[ValueColumn].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             Controls.Add(_metadataGrid);
 
@@ -103,9 +106,9 @@ namespace FileTagEditor
 
             foreach (DataGridViewRow row in _metadataGrid.Rows)
             {
-                string property = GetCellValueAsString(row, "Property");
+                string property = GetCellValueAsString(row, PropertyColumn);
                 ArgumentException.ThrowIfNullOrWhiteSpace(property);
-                string value = GetCellValueAsString(row, "Value");
+                string value = GetCellValueAsString(row, ValueColumn);
 
                 UpdateMetadataProperty(property, value, ref title, ref album, ref artist, ref comment, ref year, ref track);
             }
@@ -126,6 +129,7 @@ namespace FileTagEditor
         /// </summary>
         private static string GetCellValueAsString(DataGridViewRow row, string columnName)
         {
+            ArgumentException.ThrowIfNullOrWhiteSpace(columnName);
             return row.Cells[columnName].Value?.ToString() ?? "";
         }
 
