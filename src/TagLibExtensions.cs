@@ -47,16 +47,12 @@ namespace FileTagEditor
         /// </summary>
         public static void SaveWithWindowsCompatibility(TagLib.Riff.File riffFile)
         {
-            // Get current metadata
             TagLib.Tag currentTag = riffFile.Tag;
             
-            // Remove existing INFO tag
             riffFile.RemoveTags(TagTypes.RiffInfo);
             
-            // Create our Windows-compatible INFO tag
             WindowsInfoTag windowsInfoTag = new WindowsInfoTag();
             
-            // Copy all metadata to the Windows-compatible tag
             windowsInfoTag.Title = currentTag.Title;
             windowsInfoTag.Album = currentTag.Album;        // Will use IPRD
             windowsInfoTag.Track = currentTag.Track;        // Will use ITRK  
@@ -77,7 +73,6 @@ namespace FileTagEditor
                 combinedTag.SetTags(windowsInfoTag);
             }
             
-            // Save normally - will now use Windows-compatible chunk names
             riffFile.Save();
         }
     }

@@ -9,19 +9,16 @@ namespace FileTagEditor
         {
             try
             {
-                // Load current metadata
                 AudioMetadata currentMetadata;
                 using (TagLib.File tagFile = TagLib.File.Create(filePath))
                 {
                     currentMetadata = AudioMetadata.FromTagLibFile(tagFile);
                 }
                 
-                // Show editor form and get user's changes
                 using (MetadataEditorForm editorForm = new MetadataEditorForm(filePath, currentMetadata))
                 {
                     if (editorForm.ShowDialog() == DialogResult.OK)
                     {
-                        // User clicked Save - apply the changes
                         AudioMetadata updatedMetadata = editorForm.GetMetadata();
                         SaveMetadata(filePath, updatedMetadata);
                         
@@ -44,17 +41,15 @@ namespace FileTagEditor
         {
             using (TagLib.File tagFile = TagLib.File.Create(filePath))
             {
-                // Apply metadata to the TagLib file
                 metadata.ApplyToTagLibFile(tagFile);
                 
-                // Save with Windows compatibility for RIFF files
                 if (tagFile is TagLib.Riff.File riffFile)
                 {
                     WindowsInfoTag.SaveWithWindowsCompatibility(riffFile);
                 }
                 else
                 {
-                    tagFile.Save(); // For non-RIFF files, save normally
+                    tagFile.Save();
                 }
             }
         }

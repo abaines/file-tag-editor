@@ -78,7 +78,6 @@ namespace FileTagEditor
 
         private void LoadMetadata()
         {
-            // Add metadata rows from our model
             metadataGrid.Rows.Add("Title", metadata.Title);
             metadataGrid.Rows.Add("Album", metadata.Album);
             metadataGrid.Rows.Add("Artist", metadata.Artist);
@@ -144,8 +143,6 @@ namespace FileTagEditor
         {
             try
             {
-                // Close with OK - the manager will handle saving
-                // GetMetadata() will read current values from the grid
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
