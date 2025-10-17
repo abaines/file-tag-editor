@@ -111,27 +111,7 @@ namespace FileTagEditor
                 string property = row.Cells["Property"].Value.ToString() ?? "";
                 string value = row.Cells["Value"].Value?.ToString() ?? "";
 
-                switch (property)
-                {
-                    case "Title":
-                        title = value;
-                        break;
-                    case "Album":
-                        album = value;
-                        break;
-                    case "Artist":
-                        artist = value;
-                        break;
-                    case "Year":
-                        year = uint.TryParse(value, out uint parsedYear) ? parsedYear : 0;
-                        break;
-                    case "#":
-                        track = uint.TryParse(value, out uint parsedTrack) ? parsedTrack : 0;
-                        break;
-                    case "Comments":
-                        comment = value;
-                        break;
-                }
+                UpdateMetadataProperty(property, value, ref title, ref album, ref artist, ref comment, ref year, ref track);
             }
 
             return new AudioMetadata
@@ -143,6 +123,34 @@ namespace FileTagEditor
                 Year = year,
                 Track = track
             };
+        }
+
+        /// <summary>
+        /// Updates a specific metadata property based on the property name and value
+        /// </summary>
+        private static void UpdateMetadataProperty(string property, string value, ref string title, ref string album, ref string artist, ref string comment, ref uint year, ref uint track)
+        {
+            switch (property)
+            {
+                case "Title":
+                    title = value;
+                    break;
+                case "Album":
+                    album = value;
+                    break;
+                case "Artist":
+                    artist = value;
+                    break;
+                case "Year":
+                    year = uint.TryParse(value, out uint parsedYear) ? parsedYear : 0;
+                    break;
+                case "#":
+                    track = uint.TryParse(value, out uint parsedTrack) ? parsedTrack : 0;
+                    break;
+                case "Comments":
+                    comment = value;
+                    break;
+            }
         }
 
         private void SaveButton_Click(object? sender, EventArgs e)
