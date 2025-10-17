@@ -102,11 +102,15 @@ namespace FileTagEditor
         {
             try
             {
-                // Get both RiffInfo and ID3v2 tags - write to both for maximum compatibility
-                TagLib.Tag riffTag = tagFile.GetTag(TagLib.TagTypes.RiffInfo, true);
-                TagLib.Tag id3Tag = tagFile.GetTag(TagLib.TagTypes.Id3v2, true);
+                // Extract metadata from the grid
+                string title = "";
+                string album = "";
+                string artist = "";
+                uint year = 0;
+                uint track = 0;
+                string comment = "";
+                string genre = "";
                 
-                // Update metadata from the grid
                 foreach (DataGridViewRow row in metadataGrid.Rows)
                 {
                     if (row.Cells["Property"].Value == null) continue;
@@ -117,68 +121,70 @@ namespace FileTagEditor
                     switch (property)
                     {
                         case "Title":
-                            // Write to both formats like Audacity might
-                            riffTag.Title = string.IsNullOrWhiteSpace(value) ? null : value;
-                            id3Tag.Title = string.IsNullOrWhiteSpace(value) ? null : value;
-                            tagFile.Tag.Title = string.IsNullOrWhiteSpace(value) ? null : value;
+                            title = value ?? "";
                             break;
                         case "Album":
-                            // Write to both formats - this is key for Windows compatibility
-                            riffTag.Album = string.IsNullOrWhiteSpace(value) ? null : value;
-                            id3Tag.Album = string.IsNullOrWhiteSpace(value) ? null : value;
-                            tagFile.Tag.Album = string.IsNullOrWhiteSpace(value) ? null : value;
+                            album = value ?? "";
                             break;
                         case "Year":
-                            uint year = uint.TryParse(value, out uint parsedYear) ? parsedYear : 0;
-                            riffTag.Year = year;
-                            id3Tag.Year = year;
-                            tagFile.Tag.Year = year;
+                            year = uint.TryParse(value, out uint parsedYear) ? parsedYear : 0;
                             break;
                         case "#":
-                            uint track = uint.TryParse(value, out uint parsedTrack) ? parsedTrack : 0;
-                            // Write to both formats - this might be what makes it work
-                            riffTag.Track = track;
-                            id3Tag.Track = track;
-                            tagFile.Tag.Track = track;
+                            track = uint.TryParse(value, out uint parsedTrack) ? parsedTrack : 0;
                             break;
                         case "Comments":
-                            riffTag.Comment = string.IsNullOrWhiteSpace(value) ? null : value;
-                            id3Tag.Comment = string.IsNullOrWhiteSpace(value) ? null : value;
-                            tagFile.Tag.Comment = string.IsNullOrWhiteSpace(value) ? null : value;
+                            comment = value ?? "";
                             break;
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(property), property, $"Unknown metadata property: {property}");
+                        case "Artist":
+                            artist = value ?? "";
+                            break;
+                        case "Genre":
+                            genre = value ?? "";
+                            break;
                     }
                 }
 
-                // Save the file
-                tagFile.Save();
+                // First save with TagLibSharp for ID3 tags
+                tagFile.Tag.Title = string.IsNullOrWhiteSpace(title) ? null : title;
+                tagFile.Tag.Album = string.IsNullOrWhiteSpace(album) ? null : album;
+                tagFile.Tag.Year = year;
+                tagFile.Tag.Track = track;
+                tagFile.Tag.Comment = string.IsNullOrWhiteSpace(comment) ? null : comment;
                 
-                // Debug: Show what each tag format actually contains
+                tagFile.Save();
+                tagFile.Dispose();  // Close the file so we can rewrite it
+                
+                // Convert TagLibSharp's RIFF chunks to Windows-standard names
+                SimpleRiffPatcher.ConvertToWindowsStandard(filePath);
+                
+                // Reopen the file to check what was actually written
+                using (TagLib.File newTagFile = TagLib.File.Create(filePath))
+                {
+                    // Debug: Show what we wrote with Windows-compatible format
                 string fileName = System.IO.Path.GetFileName(filePath);
                 string debugInfo = $"Metadata saved for: {fileName}\n\n";
                 
-                debugInfo += "UNIFIED TAG:\n";
-                debugInfo += $"Title: '{tagFile.Tag.Title}'\n";
-                debugInfo += $"Subtitle: '{tagFile.Tag.Subtitle}'\n";
-                debugInfo += $"Album: '{tagFile.Tag.Album}'\n";
-                debugInfo += $"Year: {tagFile.Tag.Year}\n";
-                debugInfo += $"Track: {tagFile.Tag.Track}\n";
-                debugInfo += $"Comment: '{tagFile.Tag.Comment}'\n\n";
+                debugInfo += "WINDOWS-COMPATIBLE RIFF INFO:\n";
+                debugInfo += $"INAM (Title): '{title}'\n";
+                debugInfo += $"IPRD (Album): '{album}'\n";
+                debugInfo += $"IART (Artist): '{artist}'\n";
+                debugInfo += $"ICRD (Year): '{year}'\n";
+                debugInfo += $"ITRK (Track): '{track}'\n";
+                debugInfo += $"ICMT (Comment): '{comment}'\n";
+                debugInfo += $"IGNR (Genre): '{genre}'\n\n";
                 
-                debugInfo += "RIFF INFO TAG:\n";
-                debugInfo += $"Title: '{riffTag.Title}'\n";
-                debugInfo += $"Subtitle: '{riffTag.Subtitle}'\n";
-                debugInfo += $"Album: '{riffTag.Album}'\n";
-                debugInfo += $"Year: {riffTag.Year}\n";
-                debugInfo += $"Track: {riffTag.Track}\n";
-                debugInfo += $"Comment: '{riffTag.Comment}'\n\n";
+                    debugInfo += "UNIFIED TAG:\n";
+                    debugInfo += $"Title: '{newTagFile.Tag.Title}'\n";
+                    debugInfo += $"Album: '{newTagFile.Tag.Album}'\n";
+                    debugInfo += $"Year: {newTagFile.Tag.Year}\n";
+                    debugInfo += $"Track: {newTagFile.Tag.Track}\n";
+                    debugInfo += $"Comment: '{newTagFile.Tag.Comment}'\n\n";
+                    
+                    debugInfo += $"Tag types: {string.Join(", ", newTagFile.TagTypes)}";
+                    
+                    MessageBox.Show(debugInfo, "Debug - What Was Actually Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
                 
-
-                
-                debugInfo += $"Tag types: {string.Join(", ", tagFile.TagTypes)}";
-                
-                MessageBox.Show($"Metadata saved successfully for:\n{fileName}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
