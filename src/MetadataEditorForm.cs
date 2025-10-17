@@ -12,15 +12,7 @@ namespace FileTagEditor
         public MetadataEditorForm(string filePath, AudioMetadata initialMetadata)
         {
             this.filePath = filePath;
-            this.metadata = new AudioMetadata
-            {
-                Title = initialMetadata.Title,
-                Album = initialMetadata.Album,
-                Artist = initialMetadata.Artist,
-                Comment = initialMetadata.Comment,
-                Year = initialMetadata.Year,
-                Track = initialMetadata.Track
-            };
+            this.metadata = initialMetadata;
             
             InitializeComponent();
             LoadMetadata();
@@ -31,8 +23,7 @@ namespace FileTagEditor
         /// </summary>
         public AudioMetadata GetMetadata()
         {
-            UpdateMetadataFromGrid();
-            return metadata;
+            return UpdateMetadataFromGrid();
         }
 
         private void InitializeComponent()
@@ -103,8 +94,15 @@ namespace FileTagEditor
             metadataGrid.Rows.Add("Comments", metadata.Comment);
         }
         
-        private void UpdateMetadataFromGrid()
+        private AudioMetadata UpdateMetadataFromGrid()
         {
+            string title = metadata.Title;
+            string album = metadata.Album;
+            string artist = metadata.Artist;
+            string comment = metadata.Comment;
+            uint year = metadata.Year;
+            uint track = metadata.Track;
+            
             foreach (DataGridViewRow row in metadataGrid.Rows)
             {
                 if (row.Cells["Property"].Value == null) continue;
@@ -115,35 +113,43 @@ namespace FileTagEditor
                 switch (property)
                 {
                     case "Title":
-                        metadata.Title = value;
+                        title = value;
                         break;
                     case "Album":
-                        metadata.Album = value;
+                        album = value;
                         break;
                     case "Artist":
-                        metadata.Artist = value;
+                        artist = value;
                         break;
                     case "Year":
-                        metadata.Year = uint.TryParse(value, out uint parsedYear) ? parsedYear : 0;
+                        year = uint.TryParse(value, out uint parsedYear) ? parsedYear : 0;
                         break;
                     case "#":
-                        metadata.Track = uint.TryParse(value, out uint parsedTrack) ? parsedTrack : 0;
+                        track = uint.TryParse(value, out uint parsedTrack) ? parsedTrack : 0;
                         break;
                     case "Comments":
-                        metadata.Comment = value;
+                        comment = value;
                         break;
                 }
             }
+            
+            return new AudioMetadata
+            {
+                Title = title,
+                Album = album,
+                Artist = artist,
+                Comment = comment,
+                Year = year,
+                Track = track
+            };
         }
 
         private void SaveButton_Click(object? sender, EventArgs e)
         {
             try
             {
-                // Update our metadata model from the grid
-                UpdateMetadataFromGrid();
-                
                 // Close with OK - the manager will handle saving
+                // GetMetadata() will call UpdateMetadataFromGrid() to get current values
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }

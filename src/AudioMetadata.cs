@@ -1,16 +1,16 @@
 namespace FileTagEditor
 {
     /// <summary>
-    /// Simple data model for audio file metadata
+    /// Immutable data model for audio file metadata
     /// </summary>
-    public class AudioMetadata
+    public record AudioMetadata
     {
-        public string Title { get; set; } = "";
-        public string Album { get; set; } = "";
-        public string Artist { get; set; } = "";
-        public string Comment { get; set; } = "";
-        public uint Year { get; set; }
-        public uint Track { get; set; }
+        public string Title { get; init; } = "";
+        public string Album { get; init; } = "";
+        public string Artist { get; init; } = "";
+        public string Comment { get; init; } = "";
+        public uint Year { get; init; }
+        public uint Track { get; init; }
         
         /// <summary>
         /// Creates metadata from a TagLib file
