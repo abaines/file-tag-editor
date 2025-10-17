@@ -9,30 +9,23 @@
             Application.SetCompatibleTextRenderingDefault(false);
             
             // Show file dialog to let user select a file
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            string? selectedFile = FileSelector.SelectAudioFile();
+            
+            if (selectedFile != null)
             {
-                openFileDialog.Title = "Select a file to edit tags";
-                openFileDialog.Filter = "All files (*.*)|*.*|Audio files (*.mp3;*.flac;*.wav;*.m4a)|*.mp3;*.flac;*.wav;*.m4a";
-                openFileDialog.FilterIndex = 2; // Default to audio files
-                
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                try
                 {
-                    string selectedFile = openFileDialog.FileName;
-                    
-                    try
-                    {
-                        // Show metadata editor - manager handles all TagLibSharp operations
-                        MetadataManager.ShowMetadataEditor(selectedFile);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Error reading file metadata: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    // Show metadata editor - manager handles all TagLibSharp operations
+                    MetadataManager.ShowMetadataEditor(selectedFile);
                 }
-                else
+                catch (Exception ex)
                 {
-                    MessageBox.Show("No file selected", "File Tag Editor", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Error reading file metadata: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+            else
+            {
+                MessageBox.Show("No file selected", "File Tag Editor", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }
