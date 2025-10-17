@@ -103,10 +103,9 @@ namespace FileTagEditor
 
             foreach (DataGridViewRow row in _metadataGrid.Rows)
             {
-                ArgumentNullException.ThrowIfNull(row.Cells["Property"].Value);
-
-                string property = row.Cells["Property"].Value.ToString() ?? "";
-                string value = row.Cells["Value"].Value?.ToString() ?? "";
+                string property = GetCellValueAsString(row, "Property");
+                ArgumentException.ThrowIfNullOrWhiteSpace(property);
+                string value = GetCellValueAsString(row, "Value");
 
                 UpdateMetadataProperty(property, value, ref title, ref album, ref artist, ref comment, ref year, ref track);
             }
@@ -120,6 +119,14 @@ namespace FileTagEditor
                 Year = year,
                 Track = track
             };
+        }
+
+        /// <summary>
+        /// Gets a cell value as string with appropriate null handling
+        /// </summary>
+        private static string GetCellValueAsString(DataGridViewRow row, string columnName)
+        {
+            return row.Cells[columnName].Value?.ToString() ?? "";
         }
 
         /// <summary>
