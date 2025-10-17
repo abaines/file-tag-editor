@@ -42,6 +42,16 @@ trim_trailing_whitespace = false
 # C# files
 [*.cs]
 
+# Make formatting violations build errors
+dotnet_analyzer_rule.IDE0055.severity = error
+dotnet_diagnostic.IDE0055.severity = error
+
+# Additional formatting rules as errors
+dotnet_diagnostic.IDE0001.severity = error  # Simplify name
+dotnet_diagnostic.IDE0002.severity = error  # Simplify member access
+dotnet_diagnostic.IDE0003.severity = error  # Remove this/Me qualification
+dotnet_diagnostic.IDE0009.severity = error  # Add this/Me qualification
+
 # Organize usings
 dotnet_sort_system_directives_first = true
 dotnet_separate_import_directive_groups = false
@@ -155,7 +165,7 @@ dotnet_naming_rule.public_members_must_be_capitalized.style = first_word_upper_c
 
 dotnet_naming_symbols.public_symbols.applicable_kinds = property,method,field,event,delegate
 dotnet_naming_symbols.public_symbols.applicable_accessibilities = public
-dotnet_naming_symbols.public_symbols.required_modifiers = 
+dotnet_naming_symbols.public_symbols.required_modifiers =
 
 dotnet_naming_style.first_word_upper_case_style.capitalization = pascal_case
 
