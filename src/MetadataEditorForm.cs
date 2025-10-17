@@ -166,6 +166,8 @@ namespace FileTagEditor
                 case "Comments":
                     comment = value;
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(property), property, "Unknown property name");
             }
         }
 
