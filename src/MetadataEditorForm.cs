@@ -103,10 +103,7 @@ namespace FileTagEditor
 
             foreach (DataGridViewRow row in _metadataGrid.Rows)
             {
-                if (row.Cells["Property"].Value == null)
-                {
-                    continue;
-                }
+                ArgumentNullException.ThrowIfNull(row.Cells["Property"].Value);
 
                 string property = row.Cells["Property"].Value.ToString() ?? "";
                 string value = row.Cells["Value"].Value?.ToString() ?? "";
