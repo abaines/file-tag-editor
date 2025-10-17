@@ -1,18 +1,21 @@
+using System.Drawing;
+using System.IO;
+
 namespace FileTagEditor
 {
     public partial class MetadataEditorForm : Form
     {
-        private Label fileNameLabel = null!;
-        private DataGridView metadataGrid = null!;
-        private Button saveButton = null!;
-        private Button cancelButton = null!;
-        private readonly string filePath;
-        private AudioMetadata metadata;
+        private Label _fileNameLabel = null!;
+        private DataGridView _metadataGrid = null!;
+        private Button _saveButton = null!;
+        private Button _cancelButton = null!;
+        private readonly string _filePath;
+        private AudioMetadata _metadata;
 
         public MetadataEditorForm(string filePath, AudioMetadata initialMetadata)
         {
-            this.filePath = filePath;
-            this.metadata = initialMetadata;
+            _filePath = filePath;
+            _metadata = initialMetadata;
 
             InitializeComponent();
             LoadMetadata();
@@ -21,69 +24,69 @@ namespace FileTagEditor
 
         private void InitializeComponent()
         {
-            this.Text = "Metadata Editor - File Tag Editor";
-            this.Size = new System.Drawing.Size(600, 420);
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.FormBorderStyle = FormBorderStyle.Sizable;
-            this.MinimumSize = new System.Drawing.Size(400, 300);
+            Text = "Metadata Editor - File Tag Editor";
+            Size = new Size(600, 420);
+            StartPosition = FormStartPosition.CenterScreen;
+            FormBorderStyle = FormBorderStyle.Sizable;
+            MinimumSize = new Size(400, 300);
 
             // File name label
-            fileNameLabel = new Label();
-            fileNameLabel.Text = $"File: {System.IO.Path.GetFileName(filePath)}";
-            fileNameLabel.Location = new System.Drawing.Point(12, 12);
-            fileNameLabel.Size = new System.Drawing.Size(560, 23);
-            fileNameLabel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            fileNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold);
-            this.Controls.Add(fileNameLabel);
+            _fileNameLabel = new Label();
+            _fileNameLabel.Text = $"File: {Path.GetFileName(_filePath)}";
+            _fileNameLabel.Location = new Point(12, 12);
+            _fileNameLabel.Size = new Size(560, 23);
+            _fileNameLabel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            _fileNameLabel.Font = new Font("Microsoft Sans Serif", 9F, FontStyle.Bold);
+            Controls.Add(_fileNameLabel);
 
             // Metadata grid
-            metadataGrid = new DataGridView();
-            metadataGrid.Location = new System.Drawing.Point(12, 45);
-            metadataGrid.Size = new System.Drawing.Size(560, 280);
-            metadataGrid.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            metadataGrid.AllowUserToAddRows = false;
-            metadataGrid.AllowUserToDeleteRows = false;
-            metadataGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            metadataGrid.MultiSelect = false;
-            metadataGrid.RowHeadersVisible = false;
+            _metadataGrid = new DataGridView();
+            _metadataGrid.Location = new Point(12, 45);
+            _metadataGrid.Size = new Size(560, 280);
+            _metadataGrid.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            _metadataGrid.AllowUserToAddRows = false;
+            _metadataGrid.AllowUserToDeleteRows = false;
+            _metadataGrid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            _metadataGrid.MultiSelect = false;
+            _metadataGrid.RowHeadersVisible = false;
 
             // Add columns
-            metadataGrid.Columns.Add("Property", "Property");
-            metadataGrid.Columns.Add("Value", "Value");
-            metadataGrid.Columns["Property"].ReadOnly = true;
-            metadataGrid.Columns["Property"].Width = 150;
-            metadataGrid.Columns["Value"].Width = 400;
-            metadataGrid.Columns["Value"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            _metadataGrid.Columns.Add("Property", "Property");
+            _metadataGrid.Columns.Add("Value", "Value");
+            _metadataGrid.Columns["Property"].ReadOnly = true;
+            _metadataGrid.Columns["Property"].Width = 150;
+            _metadataGrid.Columns["Value"].Width = 400;
+            _metadataGrid.Columns["Value"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
-            this.Controls.Add(metadataGrid);
+            Controls.Add(_metadataGrid);
 
             // Cancel button (rightmost)
-            cancelButton = new Button();
-            cancelButton.Text = "Cancel";
-            cancelButton.Size = new System.Drawing.Size(90, 30);
-            cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            cancelButton.Location = new System.Drawing.Point(this.ClientSize.Width - 90 - 12, this.ClientSize.Height - 30 - 12);
-            cancelButton.Click += CancelButton_Click;
-            this.Controls.Add(cancelButton);
+            _cancelButton = new Button();
+            _cancelButton.Text = "Cancel";
+            _cancelButton.Size = new Size(90, 30);
+            _cancelButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            _cancelButton.Location = new Point(ClientSize.Width - 90 - 12, ClientSize.Height - 30 - 12);
+            _cancelButton.Click += CancelButton_Click;
+            Controls.Add(_cancelButton);
 
             // Save button (to the left of Cancel)
-            saveButton = new Button();
-            saveButton.Text = "Save";
-            saveButton.Size = new System.Drawing.Size(90, 30);
-            saveButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            saveButton.Location = new System.Drawing.Point(cancelButton.Left - 90 - 10, cancelButton.Top);
-            saveButton.Click += SaveButton_Click;
-            this.Controls.Add(saveButton);
+            _saveButton = new Button();
+            _saveButton.Text = "Save";
+            _saveButton.Size = new Size(90, 30);
+            _saveButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            _saveButton.Location = new Point(_cancelButton.Left - 90 - 10, _cancelButton.Top);
+            _saveButton.Click += SaveButton_Click;
+            Controls.Add(_saveButton);
         }
 
         private void LoadMetadata()
         {
-            metadataGrid.Rows.Add("Title", metadata.Title);
-            metadataGrid.Rows.Add("Album", metadata.Album);
-            metadataGrid.Rows.Add("Artist", metadata.Artist);
-            metadataGrid.Rows.Add("Year", metadata.Year == 0 ? "" : metadata.Year.ToString());
-            metadataGrid.Rows.Add("#", metadata.Track == 0 ? "" : metadata.Track.ToString());
-            metadataGrid.Rows.Add("Comments", metadata.Comment);
+            _metadataGrid.Rows.Add("Title", _metadata.Title);
+            _metadataGrid.Rows.Add("Album", _metadata.Album);
+            _metadataGrid.Rows.Add("Artist", _metadata.Artist);
+            _metadataGrid.Rows.Add("Year", _metadata.Year == 0 ? "" : _metadata.Year.ToString());
+            _metadataGrid.Rows.Add("#", _metadata.Track == 0 ? "" : _metadata.Track.ToString());
+            _metadataGrid.Rows.Add("Comments", _metadata.Comment);
         }
 
         /// <summary>
@@ -91,16 +94,19 @@ namespace FileTagEditor
         /// </summary>
         public AudioMetadata GetMetadata()
         {
-            string title = metadata.Title;
-            string album = metadata.Album;
-            string artist = metadata.Artist;
-            string comment = metadata.Comment;
-            uint year = metadata.Year;
-            uint track = metadata.Track;
+            string title = _metadata.Title;
+            string album = _metadata.Album;
+            string artist = _metadata.Artist;
+            string comment = _metadata.Comment;
+            uint year = _metadata.Year;
+            uint track = _metadata.Track;
 
-            foreach (DataGridViewRow row in metadataGrid.Rows)
+            foreach (DataGridViewRow row in _metadataGrid.Rows)
             {
-                if (row.Cells["Property"].Value == null) continue;
+                if (row.Cells["Property"].Value == null)
+                {
+                    continue;
+                }
 
                 string property = row.Cells["Property"].Value.ToString() ?? "";
                 string value = row.Cells["Value"].Value?.ToString() ?? "";
@@ -143,8 +149,8 @@ namespace FileTagEditor
         {
             try
             {
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                DialogResult = DialogResult.OK;
+                Close();
             }
             catch (Exception ex)
             {
@@ -155,8 +161,8 @@ namespace FileTagEditor
 
         private void CancelButton_Click(object? sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
     }
 }
