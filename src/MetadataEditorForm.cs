@@ -18,13 +18,6 @@ namespace FileTagEditor
             LoadMetadata();
         }
         
-        /// <summary>
-        /// Gets the current metadata from the form
-        /// </summary>
-        public AudioMetadata GetMetadata()
-        {
-            return UpdateMetadataFromGrid();
-        }
 
         private void InitializeComponent()
         {
@@ -93,8 +86,11 @@ namespace FileTagEditor
             metadataGrid.Rows.Add("#", metadata.Track == 0 ? "" : metadata.Track.ToString());
             metadataGrid.Rows.Add("Comments", metadata.Comment);
         }
-        
-        private AudioMetadata UpdateMetadataFromGrid()
+
+        /// <summary>
+        /// Gets the current metadata from the form
+        /// </summary>
+        public AudioMetadata GetMetadata()
         {
             string title = metadata.Title;
             string album = metadata.Album;
@@ -149,7 +145,7 @@ namespace FileTagEditor
             try
             {
                 // Close with OK - the manager will handle saving
-                // GetMetadata() will call UpdateMetadataFromGrid() to get current values
+                // GetMetadata() will read current values from the grid
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
