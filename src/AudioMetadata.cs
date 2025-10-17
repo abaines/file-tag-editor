@@ -7,7 +7,6 @@ namespace FileTagEditor
     {
         public string Title { get; init; } = "";
         public string Album { get; init; } = "";
-        public string Artist { get; init; } = "";
         public string Comment { get; init; } = "";
         public uint Year { get; init; }
         public uint Track { get; init; }
@@ -21,7 +20,6 @@ namespace FileTagEditor
             {
                 Title = tagFile.Tag.Title ?? "",
                 Album = tagFile.Tag.Album ?? "",
-                Artist = tagFile.Tag.FirstPerformer ?? "",
                 Comment = tagFile.Tag.Comment ?? "",
                 Year = tagFile.Tag.Year,
                 Track = tagFile.Tag.Track
@@ -35,7 +33,6 @@ namespace FileTagEditor
         {
             tagFile.Tag.Title = string.IsNullOrWhiteSpace(Title) ? null : Title;
             tagFile.Tag.Album = string.IsNullOrWhiteSpace(Album) ? null : Album;
-            tagFile.Tag.Performers = string.IsNullOrWhiteSpace(Artist) ? new string[0] : new[] { Artist };
             tagFile.Tag.Comment = string.IsNullOrWhiteSpace(Comment) ? null : Comment;
             tagFile.Tag.Year = Year;
             tagFile.Tag.Track = Track;
