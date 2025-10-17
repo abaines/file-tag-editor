@@ -1,8 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-using TagLib;
-
-namespace FileTagEditor
+﻿namespace FileTagEditor
 {
     static class Program
     {
@@ -25,11 +21,8 @@ namespace FileTagEditor
                     
                     try
                     {
-                        // Use TagLibSharp to read the file metadata
-                        using (TagLib.File tagLibFile = TagLib.File.Create(selectedFile))
-                        {
-                            MetadataManager.ShowMetadataEditor(selectedFile, tagLibFile);
-                        }
+                        // Show metadata editor - manager handles all TagLibSharp operations
+                        MetadataManager.ShowMetadataEditor(selectedFile);
                     }
                     catch (Exception ex)
                     {

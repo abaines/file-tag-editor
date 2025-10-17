@@ -1,8 +1,3 @@
-using System;
-using System.Data;
-using System.Windows.Forms;
-using TagLib;
-
 namespace FileTagEditor
 {
     public partial class MetadataEditorForm : Form
@@ -11,15 +6,34 @@ namespace FileTagEditor
         private DataGridView metadataGrid = null!;
         private Button saveButton = null!;
         private Button cancelButton = null!;
-        private TagLib.File tagFile;
-        private string filePath;
+        private readonly string filePath;
+        private AudioMetadata metadata;
 
-        public MetadataEditorForm(string filePath, TagLib.File tagFile)
+        public MetadataEditorForm(string filePath, AudioMetadata initialMetadata)
         {
             this.filePath = filePath;
-            this.tagFile = tagFile;
+            this.metadata = new AudioMetadata
+            {
+                Title = initialMetadata.Title,
+                Album = initialMetadata.Album,
+                Artist = initialMetadata.Artist,
+                Comment = initialMetadata.Comment,
+                Genre = initialMetadata.Genre,
+                Year = initialMetadata.Year,
+                Track = initialMetadata.Track
+            };
+            
             InitializeComponent();
             LoadMetadata();
+        }
+        
+        /// <summary>
+        /// Gets the current metadata from the form
+        /// </summary>
+        public AudioMetadata GetMetadata()
+        {
+            UpdateMetadataFromGrid();
+            return metadata;
         }
 
         private void InitializeComponent()
@@ -81,95 +95,67 @@ namespace FileTagEditor
 
         private void LoadMetadata()
         {
-            // Add metadata rows - only fields that work reliably with Windows for WAV files
-            string title = tagFile.Tag.Title ?? "";
-            metadataGrid.Rows.Add("Title", title);
-            
-            string album = tagFile.Tag.Album ?? "";
-            metadataGrid.Rows.Add("Album", album);
-            
-            uint year = tagFile.Tag.Year;
-            metadataGrid.Rows.Add("Year", year == 0 ? "" : year.ToString());
-            
-            uint track = tagFile.Tag.Track;
-            metadataGrid.Rows.Add("#", track == 0 ? "" : track.ToString());
-            
-            string comment = tagFile.Tag.Comment ?? "";
-            metadataGrid.Rows.Add("Comments", comment);
+            // Add metadata rows from our model
+            metadataGrid.Rows.Add("Title", metadata.Title);
+            metadataGrid.Rows.Add("Album", metadata.Album);
+            metadataGrid.Rows.Add("Artist", metadata.Artist);
+            metadataGrid.Rows.Add("Year", metadata.Year == 0 ? "" : metadata.Year.ToString());
+            metadataGrid.Rows.Add("#", metadata.Track == 0 ? "" : metadata.Track.ToString());
+            metadataGrid.Rows.Add("Comments", metadata.Comment);
+            metadataGrid.Rows.Add("Genre", metadata.Genre);
+        }
+        
+        private void UpdateMetadataFromGrid()
+        {
+            foreach (DataGridViewRow row in metadataGrid.Rows)
+            {
+                if (row.Cells["Property"].Value == null) continue;
+                
+                string property = row.Cells["Property"].Value.ToString() ?? "";
+                string value = row.Cells["Value"].Value?.ToString() ?? "";
+                
+                switch (property)
+                {
+                    case "Title":
+                        metadata.Title = value;
+                        break;
+                    case "Album":
+                        metadata.Album = value;
+                        break;
+                    case "Artist":
+                        metadata.Artist = value;
+                        break;
+                    case "Year":
+                        metadata.Year = uint.TryParse(value, out uint parsedYear) ? parsedYear : 0;
+                        break;
+                    case "#":
+                        metadata.Track = uint.TryParse(value, out uint parsedTrack) ? parsedTrack : 0;
+                        break;
+                    case "Comments":
+                        metadata.Comment = value;
+                        break;
+                    case "Genre":
+                        metadata.Genre = value;
+                        break;
+                }
+            }
         }
 
         private void SaveButton_Click(object? sender, EventArgs e)
         {
             try
             {
-                // Extract metadata from the grid
-                string title = "";
-                string album = "";
-                string artist = "";
-                uint year = 0;
-                uint track = 0;
-                string comment = "";
-                string genre = "";
+                // Update our metadata model from the grid
+                UpdateMetadataFromGrid();
                 
-                foreach (DataGridViewRow row in metadataGrid.Rows)
-                {
-                    if (row.Cells["Property"].Value == null) continue;
-                    
-                    string property = row.Cells["Property"].Value.ToString() ?? "";
-                    string value = row.Cells["Value"].Value?.ToString() ?? "";
-                    
-                    switch (property)
-                    {
-                        case "Title":
-                            title = value ?? "";
-                            break;
-                        case "Album":
-                            album = value ?? "";
-                            break;
-                        case "Year":
-                            year = uint.TryParse(value, out uint parsedYear) ? parsedYear : 0;
-                            break;
-                        case "#":
-                            track = uint.TryParse(value, out uint parsedTrack) ? parsedTrack : 0;
-                            break;
-                        case "Comments":
-                            comment = value ?? "";
-                            break;
-                        case "Artist":
-                            artist = value ?? "";
-                            break;
-                        case "Genre":
-                            genre = value ?? "";
-                            break;
-                    }
-                }
-
-                // Update metadata in TagLibSharp
-                tagFile.Tag.Title = string.IsNullOrWhiteSpace(title) ? null : title;
-                tagFile.Tag.Album = string.IsNullOrWhiteSpace(album) ? null : album;
-                tagFile.Tag.Year = year;
-                tagFile.Tag.Track = track;
-                tagFile.Tag.Comment = string.IsNullOrWhiteSpace(comment) ? null : comment;
-                
-                // Save with Windows compatibility for RIFF files
-                if (tagFile is TagLib.Riff.File riffFile)
-                {
-                    WindowsInfoTag.SaveWithWindowsCompatibility(riffFile);
-                }
-                else
-                {
-                    tagFile.Save(); // For non-RIFF files, save normally
-                }
-                tagFile.Dispose();
-                
-                MessageBox.Show("Metadata saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                
+                // Close with OK - the manager will handle saving
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error saving metadata: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error updating metadata: {ex.Message}", "Error", 
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
