@@ -5,7 +5,10 @@
             "label": "build",
             "command": "dotnet",
             "type": "shell",
-            "args": ["build", "FileTagEditor.csproj"],
+            "args": [
+                "build",
+                "FileTagEditor.csproj"
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -13,6 +16,27 @@
             "presentation": {
                 "echo": true,
                 "reveal": "silent",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish-release",
+            "command": "dotnet",
+            "type": "shell",
+            "args": [
+                "publish",
+                "FileTagEditor.csproj",
+                "-c",
+                "Release",
+                "--no-self-contained",
+                "-p:PublishSingleFile=true"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
                 "focus": false,
                 "panel": "shared"
             },
