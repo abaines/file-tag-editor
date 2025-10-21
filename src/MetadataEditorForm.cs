@@ -1,6 +1,3 @@
-using System.Drawing;
-using System.IO;
-
 namespace FileTagEditor
 {
     public partial class MetadataEditorForm : Form
