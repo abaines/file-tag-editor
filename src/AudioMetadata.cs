@@ -18,8 +18,16 @@ namespace FileTagEditor
             {
                 Title = tagFile.Tag.Title ?? "",
                 Comment = tagFile.Tag.Comment ?? "",
-                Year = tagFile.Tag.Year,
+                Year = GetValidYear(tagFile.Tag.Year),
             };
+        }
+
+        /// <summary>
+        /// Gets a valid year, defaulting to current year if the input is before 1900
+        /// </summary>
+        private static uint GetValidYear(uint year)
+        {
+            return year < 1900 ? (uint)DateTime.Now.Year : year;
         }
 
         /// <summary>
