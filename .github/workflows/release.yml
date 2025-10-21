@@ -1,0 +1,93 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0'
+      prerelease:
+        description: 'Mark as pre-release'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Validate version input
+      run: |
+        if ("${{ github.event.inputs.version }}" -notmatch "^v\d+\.\d+\.\d+") {
+          Write-Error "Version must be in format v1.2.3"
+          exit 1
+        }
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore FileTagEditor.csproj
+
+    - name: Build and publish
+      run: dotnet publish FileTagEditor.csproj -c Release --no-self-contained -p:PublishSingleFile=true
+
+    - name: Copy README to publish folder
+      run: copy README.md bin\Release\net8.0-windows\win-x64\publish\README.md
+
+    - name: Create release package
+      run: |
+        $version = "${{ github.event.inputs.version }}"
+        $publishDir = "bin\Release\net8.0-windows\win-x64\publish"
+        $packageDir = "file-tag-editor-$version"
+
+        # Verify files exist
+        if (!(Test-Path "$publishDir\FileTagEditor.exe")) {
+          Write-Error "FileTagEditor.exe not found in publish directory"
+          exit 1
+        }
+
+        # Create package
+        New-Item -ItemType Directory -Path $packageDir -Force
+        Copy-Item "$publishDir\FileTagEditor.exe" "$packageDir\"
+        Copy-Item "$publishDir\README.md" "$packageDir\"
+        Compress-Archive -Path $packageDir -DestinationPath "$packageDir.zip" -Force
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
+      with:
+        tag_name: ${{ github.event.inputs.version }}
+        name: File Tag Editor ${{ github.event.inputs.version }}
+        body: |
+          ## File Tag Editor Release ${{ github.event.inputs.version }}
+
+          ### What's Included
+          - `FileTagEditor.exe` - Single executable (~658 KB)
+          - `README.md` - Documentation and license information
+
+          ### Requirements
+          - Windows operating system
+          - .NET 8.0 Desktop Runtime ([Download here](https://dotnet.microsoft.com/download/dotnet/8.0))
+
+          ### Installation
+          1. Download and extract the ZIP file
+          2. Run `FileTagEditor.exe`
+          3. Select an audio file to edit its metadata
+
+          ### Changes
+          See commit history for detailed changes.
+        prerelease: ${{ github.event.inputs.prerelease }}
+        files: |
+          file-tag-editor-${{ github.event.inputs.version }}.zip
+          bin/Release/net8.0-windows/win-x64/publish/FileTagEditor.exe
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
