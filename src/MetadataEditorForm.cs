@@ -82,9 +82,7 @@ namespace FileTagEditor
         private void LoadMetadata()
         {
             _metadataGrid.Rows.Add("Title", _metadata.Title);
-            _metadataGrid.Rows.Add("Album", _metadata.Album);
             _metadataGrid.Rows.Add("Year", _metadata.Year == 0 ? "" : _metadata.Year.ToString());
-            _metadataGrid.Rows.Add("#", _metadata.Track == 0 ? "" : _metadata.Track.ToString());
             _metadataGrid.Rows.Add("Comments", _metadata.Comment);
         }
 
@@ -94,10 +92,8 @@ namespace FileTagEditor
         public AudioMetadata GetMetadata()
         {
             string title = _metadata.Title;
-            string album = _metadata.Album;
             string comment = _metadata.Comment;
             uint year = _metadata.Year;
-            uint track = _metadata.Track;
 
             foreach (DataGridViewRow row in _metadataGrid.Rows)
             {
@@ -105,16 +101,14 @@ namespace FileTagEditor
                 ArgumentException.ThrowIfNullOrWhiteSpace(property);
                 string value = GetCellValueAsString(row, ValueColumn);
 
-                UpdateMetadataProperty(property, value, ref title, ref album, ref comment, ref year, ref track);
+                UpdateMetadataProperty(property, value, ref title, ref comment, ref year);
             }
 
             return new AudioMetadata
             {
                 Title = title,
-                Album = album,
                 Comment = comment,
                 Year = year,
-                Track = track
             };
         }
 
@@ -138,21 +132,15 @@ namespace FileTagEditor
         /// <summary>
         /// Updates a specific metadata property based on the property name and value
         /// </summary>
-        private static void UpdateMetadataProperty(string property, string value, ref string title, ref string album, ref string comment, ref uint year, ref uint track)
+        private static void UpdateMetadataProperty(string property, string value, ref string title, ref string comment, ref uint year)
         {
             switch (property)
             {
                 case "Title":
                     title = value;
                     break;
-                case "Album":
-                    album = value;
-                    break;
                 case "Year":
                     year = ParseUintOrDefault(value);
-                    break;
-                case "#":
-                    track = ParseUintOrDefault(value);
                     break;
                 case "Comments":
                     comment = value;
