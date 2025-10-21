@@ -54,3 +54,14 @@ Use `Ctrl+Shift+P` → "Tasks: Run Task" and select:
 3. Edit metadata fields in the grid
 4. Click Save to apply changes
 5. Original file timestamps are preserved
+
+## Dependencies
+
+This application uses [TagLibSharp](https://github.com/mono/taglib-sharp) for audio metadata processing.
+TagLibSharp is licensed under the GNU Lesser General Public License (LGPL) v2.1.
+
+## License
+
+TagLibSharp License: [LGPL v2.1](https://github.com/mono/taglib-sharp/blob/master/COPYING)
+
+This application complies with the LGPL v2.1 license requirements for TagLibSharp.

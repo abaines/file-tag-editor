@@ -31,7 +31,11 @@
                 "-c",
                 "Release",
                 "--no-self-contained",
-                "-p:PublishSingleFile=true"
+                "-p:PublishSingleFile=true",
+                ";",
+                "copy",
+                "README.md",
+                "bin\\Release\\net8.0-windows\\win-x64\\publish\\README.md"
             ],
             "group": "build",
             "presentation": {
