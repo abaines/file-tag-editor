@@ -24,12 +24,12 @@ namespace FileTagEditor
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error reading file metadata: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBoxHelper.ShowError("Error reading file metadata", ex);
                 }
             }
             else
             {
-                MessageBox.Show("No file selected", "File Tag Editor", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBoxHelper.ShowInfo("No file selected");
             }
         }
     }

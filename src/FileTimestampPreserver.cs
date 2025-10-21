@@ -43,7 +43,7 @@ namespace FileTagEditor
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error restoring file timestamps: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBoxHelper.ShowError("Error restoring file timestamps", ex);
             }
             finally
             {

@@ -18,15 +18,13 @@ namespace FileTagEditor
                         AudioMetadata updatedMetadata = editorForm.GetMetadata();
                         SaveMetadata(filePath, updatedMetadata);
 
-                        MessageBox.Show("Metadata saved successfully!", "Success",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxHelper.ShowInfo("Metadata saved successfully!");
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error handling metadata: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBoxHelper.ShowError("Error handling metadata", ex);
             }
         }
 

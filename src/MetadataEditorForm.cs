@@ -159,8 +159,7 @@ namespace FileTagEditor
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error updating metadata: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBoxHelper.ShowError("Error updating metadata", ex);
             }
         }
 
