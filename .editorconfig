@@ -52,9 +52,15 @@ dotnet_diagnostic.IDE0002.severity = error  # Simplify member access
 dotnet_diagnostic.IDE0003.severity = error  # Remove this/Me qualification
 dotnet_diagnostic.IDE0009.severity = error  # Add this/Me qualification
 
-# Organize usings
-dotnet_sort_system_directives_first = true
-dotnet_separate_import_directive_groups = false
+# ENFORCE USING STATEMENTS OVER FULLY QUALIFIED NAMES
+dotnet_diagnostic.IDE0005.severity = error  # Remove unnecessary usings
+
+# FORCE SIMPLIFICATION OF MEMBER ACCESS (this catches fully qualified names)
+dotnet_diagnostic.IDE0002.severity = error  # Simplify member access - this should catch TagLib.File
+
+# Using directives preferences
+csharp_using_directive_placement = outside_namespace:error
+dotnet_sort_system_directives_first = true:error
 
 # this. preferences
 dotnet_style_qualification_for_field = false:error
