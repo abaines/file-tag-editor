@@ -46,10 +46,10 @@ namespace FileTagEditor
         /// </summary>
         private static void SaveMetadata(string filePath, AudioMetadata metadata)
         {
+            using (FileTimestampPreserver timestampPreserver = new FileTimestampPreserver(filePath))
             using (TagLib.File tagFile = TagLib.File.Create(filePath))
             {
                 metadata.ApplyToTagLibFile(tagFile);
-
                 tagFile.Save();
             }
         }
