@@ -50,14 +50,7 @@ namespace FileTagEditor
             {
                 metadata.ApplyToTagLibFile(tagFile);
 
-                if (tagFile is TagLib.Riff.File riffFile)
-                {
-                    WindowsInfoTag.SaveWithWindowsCompatibility(riffFile);
-                }
-                else
-                {
-                    tagFile.Save();
-                }
+                tagFile.Save();
             }
         }
     }
