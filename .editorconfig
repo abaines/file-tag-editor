@@ -124,9 +124,13 @@ csharp_preferred_modifier_order = public,private,protected,internal,static,exter
 # Expression-level preferences
 csharp_prefer_braces = true:error
 csharp_style_deconstructed_variable_declaration = true:suggestion
-csharp_prefer_simple_using_statement = true:suggestion
+csharp_prefer_simple_using_statement = false:error
 csharp_style_pattern_local_over_anonymous_function = true:suggestion
 csharp_style_inlined_variable_declaration = true:suggestion
+
+# Require braces for all control structures including using statements
+dotnet_diagnostic.IDE0011.severity = error  # Add braces
+dotnet_diagnostic.CA1068.severity = error   # CancellationToken parameters must come last
 
 # C# formatting rules
 
