@@ -2,7 +2,7 @@
 
 ## Coding Style
 - All variables, method parameters, and return values must have explicit static types.
-- Use C#'s explicit typing system for all code (e.g., `int foo = 0;`, `string bar = "hello";`).
+- Use C# 's explicit typing system for all code (e.g., `int foo = 0;`, `string bar = "hello";`).
 - Do not use `var` keyword or rely on type inference except for complex generic types where the type is obvious from the right side.
 - When writing Markdown, break long sentences across multiple lines for easier diffs and code review.
 	Do not add two spaces at the end of a line unless you want a line break in the rendered output.
@@ -22,7 +22,7 @@ This ensures error messages are specific and debugging is easier.
 Prefer single-assignment local variables for clarity and immutability, similar to Rust's `let` or `const` in other languages.
 Use `const` for compile-time constants and `static readonly` for runtime constants.
 
-## C#/.NET Specific
+## C# / .NET Specific
 - Use nullable reference types (`string?`, `object?`) and enable nullable warnings in project file.
 - Use `record` types for data containers and value objects.
 - Follow Microsoft's C# naming conventions: PascalCase for public members, camelCase for private fields with underscore prefix (`_fieldName`).
