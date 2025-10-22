@@ -67,7 +67,7 @@ jobs:
           ## File Tag Editor Release ${{ steps.version.outputs.version }}
 
           ### What's Included
-          - `FileTagEditor.exe` - Single executable (~658 KB)
+          - `FileTagEditor.exe` - Single executable
           - `README.md` - Documentation and license information
 
           ### Requirements
