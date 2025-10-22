@@ -11,12 +11,13 @@ jobs:
 
     steps:
     - name: Validate and extract version from tag
+      id: version
       run: |
         $ref = "${{ github.ref }}"
         if ($ref -match "^refs/tags/(v\d+\.\d+\.\d+)$") {
           $version = $matches[1]
           Write-Host "Valid version tag: $version"
-          echo "VERSION=$version" >> $env:GITHUB_ENV
+          echo "version=$version" >> $env:GITHUB_OUTPUT
         } else {
           Write-Error "Invalid tag format. Expected v1.2.3, got: $ref"
           exit 1
@@ -41,7 +42,7 @@ jobs:
 
     - name: Create release package
       run: |
-        $version = "${{ env.VERSION }}"
+        $version = "${{ steps.version.outputs.version }}"
         $publishDir = "bin\Release\net8.0-windows\win-x64\publish"
         $packageDir = "file-tag-editor-$version"
 
@@ -60,10 +61,10 @@ jobs:
     - name: Create GitHub Release
       uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
       with:
-        tag_name: ${{ env.VERSION }}
-        name: File Tag Editor ${{ env.VERSION }}
+        tag_name: ${{ steps.version.outputs.version }}
+        name: File Tag Editor ${{ steps.version.outputs.version }}
         body: |
-          ## File Tag Editor Release ${{ env.VERSION }}
+          ## File Tag Editor Release ${{ steps.version.outputs.version }}
 
           ### What's Included
           - `FileTagEditor.exe` - Single executable (~658 KB)
@@ -82,7 +83,7 @@ jobs:
           See commit history for detailed changes.
         prerelease: true
         files: |
-          file-tag-editor-${{ env.VERSION }}.zip
+          file-tag-editor-${{ steps.version.outputs.version }}.zip
           bin/Release/net8.0-windows/win-x64/publish/FileTagEditor.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
