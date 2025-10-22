@@ -2,16 +2,6 @@ name: Create Release
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Release version (e.g., v1.0.0)'
-        required: true
-        default: 'v1.0.0'
-      prerelease:
-        description: 'Mark as pre-release'
-        required: false
-        default: false
-        type: boolean
 
 jobs:
   build-and-release:
@@ -20,10 +10,15 @@ jobs:
       contents: write
 
     steps:
-    - name: Validate version input
+    - name: Validate and extract version from tag
       run: |
-        if ("${{ github.event.inputs.version }}" -notmatch "^v\d+\.\d+\.\d+") {
-          Write-Error "Version must be in format v1.2.3"
+        $ref = "${{ github.ref }}"
+        if ($ref -match "^refs/tags/(v\d+\.\d+\.\d+)$") {
+          $version = $matches[1]
+          Write-Host "Valid version tag: $version"
+          echo "VERSION=$version" >> $env:GITHUB_ENV
+        } else {
+          Write-Error "Invalid tag format. Expected v1.2.3, got: $ref"
           exit 1
         }
 
@@ -46,7 +41,7 @@ jobs:
 
     - name: Create release package
       run: |
-        $version = "${{ github.event.inputs.version }}"
+        $version = "${{ env.VERSION }}"
         $publishDir = "bin\Release\net8.0-windows\win-x64\publish"
         $packageDir = "file-tag-editor-$version"
 
@@ -65,10 +60,10 @@ jobs:
     - name: Create GitHub Release
       uses: softprops/action-gh-release@6da8fa9354ddfdc4aeace5fc48d7f679b5214090 # v2.4.1
       with:
-        tag_name: ${{ github.event.inputs.version }}
-        name: File Tag Editor ${{ github.event.inputs.version }}
+        tag_name: ${{ env.VERSION }}
+        name: File Tag Editor ${{ env.VERSION }}
         body: |
-          ## File Tag Editor Release ${{ github.event.inputs.version }}
+          ## File Tag Editor Release ${{ env.VERSION }}
 
           ### What's Included
           - `FileTagEditor.exe` - Single executable (~658 KB)
@@ -85,9 +80,9 @@ jobs:
 
           ### Changes
           See commit history for detailed changes.
-        prerelease: ${{ github.event.inputs.prerelease }}
+        prerelease: true
         files: |
-          file-tag-editor-${{ github.event.inputs.version }}.zip
+          file-tag-editor-${{ env.VERSION }}.zip
           bin/Release/net8.0-windows/win-x64/publish/FileTagEditor.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
